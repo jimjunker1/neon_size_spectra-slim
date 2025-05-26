@@ -7,7 +7,8 @@ theme_set(brms::theme_default())
 
 # load data
 neon_latlong <- read_csv(file = "data/raw_data/site_lat_longs.csv") %>% distinct(siteID, lat, long) %>% 
-  clean_names()
+  clean_names() %>% sf::st_as_sf(., coords = c("long", "lat"), crs = 4326)
+
 
 predictors = readRDS("data/predictors_scaled.rds") 
 
@@ -26,16 +27,17 @@ usa <- ne_countries(scale='medium',returnclass = 'sf')
 (map_temp <- usa %>% 
     filter(sovereignt == "United States of America") %>% 
     ggplot() + 
-    # coord_sf() + 
+    # coord_sf(data ) 
     geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "grey70") +
     geom_sf(color = "white", fill = "grey70") +
     geom_polygon(data = states, aes(x = long, y = lat, group = group), color = "white", fill = "grey70")  +
-    geom_point(data = temp_gpp_om %>% filter(name == "temp_deg_c"), 
-               aes(x = long, y = lat, fill = value),
+    geom_sf(data = temp_gpp_om%>% filter(name == "temp_deg_c"), aes(geometry = geometry, fill = value),
+    # geom_point(data = temp_gpp_om %>% filter(name == "temp_deg_c"), 
+               # aes(x = long, y = lat, fill = value),
                size = 2,
-               alpha = 0.9,
-               color = "black", shape = 21,
-               position = position_jitter(width = 2, height = 1, seed = 2323)) +
+               alpha = 0.7,
+               color = "black", shape = 21)+#,
+               # position = position_jitter(width = 2, height = 1, seed = 2323)) +
     theme_void() +
     coord_sf(ylim = c(10, 68), xlim = c(-160, -68)) +
     labs(fill = "\u00b0C",
