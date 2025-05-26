@@ -34,9 +34,9 @@ usa <- ne_countries(scale='medium',returnclass = 'sf')
     geom_sf(data = temp_gpp_om%>% filter(name == "temp_deg_c"), aes(geometry = geometry, fill = value),
     # geom_point(data = temp_gpp_om %>% filter(name == "temp_deg_c"), 
                # aes(x = long, y = lat, fill = value),
-               size = 2,
-               alpha = 0.7,
-               color = "black", shape = 21)+#,
+               size = 1.5,
+               alpha = 0.8,
+               color = "white", shape = 21)+#,
                # position = position_jitter(width = 2, height = 1, seed = 2323)) +
     theme_void() +
     coord_sf(ylim = c(10, 68), xlim = c(-160, -68)) +
@@ -51,6 +51,9 @@ usa <- ne_countries(scale='medium',returnclass = 'sf')
     NULL)
 
 #2) Get correlations
+#2.1) load the model
+fit_temp_om_gpp = readRDS("models/fit_temp_om_gpp.rds")
+
 abiotic_wide = fit_temp_om_gpp$data %>% 
   distinct(mat_s, log_gpp_s, log_om_s) 
 
